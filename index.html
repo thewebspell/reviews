@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:,">
+<title>Leave a Google review</title>
+<style>
+  :root{
+    --brand:#8a2d4d;
+    --ink:#241219;
+    --muted:#6b6168;
+    --line:#e7e1e4;
+    --bg:#f6f3f4;
+    --card:#ffffff;
+    --ok:#1d7a4c;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Sans Devanagari","Noto Sans Gujarati",sans-serif;
+    font-size:17px;
+    line-height:1.5;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:520px;margin:0 auto;padding:0 16px 48px}
+
+  header.top{
+    background:var(--brand);
+    color:#fff;
+    padding:22px 16px 20px;
+    margin:0 0 18px;
+  }
+  .top-inner{max-width:520px;margin:0 auto}
+  .biz{font-size:20px;font-weight:700;line-height:1.3;margin:0}
+  .rating{
+    display:inline-flex;align-items:center;gap:7px;
+    margin-top:9px;font-size:14px;
+    background:rgba(255,255,255,.16);
+    border-radius:999px;padding:4px 11px;
+  }
+  .rating b{font-weight:700}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px;
+    margin-bottom:14px;
+  }
+  .step{
+    display:flex;align-items:baseline;gap:8px;
+    margin:0 0 12px;
+  }
+  .step-n{
+    flex:none;
+    width:23px;height:23px;border-radius:50%;
+    background:var(--brand);color:#fff;
+    font-size:13px;font-weight:700;
+    display:grid;place-items:center;
+    transform:translateY(2px);
+  }
+  .step h2{margin:0;font-size:17px;font-weight:650;line-height:1.35}
+  .hint{margin:-4px 0 12px 31px;font-size:14px;color:var(--muted)}
+
+  .langs{display:flex;flex-wrap:wrap;gap:8px}
+  .lang{
+    appearance:none;border:1.5px solid var(--line);background:#fff;
+    color:var(--ink);font:inherit;font-size:15px;
+    border-radius:999px;padding:9px 15px;min-height:44px;
+    cursor:pointer;
+  }
+  .lang[aria-pressed="true"]{
+    border-color:var(--brand);background:var(--brand);color:#fff;font-weight:600;
+  }
+
+  .stars{display:flex;gap:4px;justify-content:space-between;max-width:300px}
+  .star{
+    appearance:none;border:0;background:none;padding:6px 2px;
+    font-size:38px;line-height:1;cursor:pointer;color:#d8d2d5;
+    min-width:44px;min-height:44px;
+  }
+  .star.on{color:#f0a500}
+  .star-word{margin-top:4px;font-size:14px;color:var(--muted);min-height:21px}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    appearance:none;border:1.5px solid var(--line);background:#fff;
+    color:var(--ink);font:inherit;font-size:15px;
+    border-radius:999px;padding:9px 14px;min-height:44px;
+    cursor:pointer;text-align:left;
+  }
+  .chip[aria-pressed="true"]{
+    border-color:var(--brand);
+    background:color-mix(in srgb, var(--brand) 9%, #fff);
+    font-weight:600;
+  }
+  .chip[aria-pressed="true"]::before{content:"\2713\00a0";color:var(--brand);font-weight:700}
+
+  textarea{
+    width:100%;border:1.5px solid var(--line);border-radius:10px;
+    padding:12px;font:inherit;font-size:16px;line-height:1.55;
+    color:var(--ink);background:#fff;resize:vertical;min-height:150px;
+  }
+  textarea:focus{outline:2px solid var(--brand);outline-offset:1px;border-color:var(--brand)}
+
+  .btn{
+    display:block;width:100%;text-align:center;
+    border-radius:11px;padding:15px 14px;min-height:52px;
+    font:inherit;font-size:17px;font-weight:650;
+    cursor:pointer;border:1.5px solid var(--brand);
+    text-decoration:none;margin-top:10px;
+  }
+  .btn-ghost{background:#fff;color:var(--brand)}
+  .btn-solid{background:var(--brand);color:#fff}
+  .btn-solid[aria-disabled="true"]{opacity:.45;pointer-events:none}
+  .btn-done{background:var(--ok);border-color:var(--ok);color:#fff}
+  .btn-small{
+    display:inline-block;width:auto;margin:10px 0 0;
+    padding:9px 14px;min-height:44px;font-size:15px;font-weight:500;
+    background:#fff;color:var(--muted);border:1.5px solid var(--line);border-radius:999px;
+  }
+
+  .paste-hint{margin:10px 0 0;font-size:14px;color:var(--muted)}
+  .signin{margin:6px 0 0;font-size:13px;color:var(--muted)}
+
+  .wa{
+    display:block;text-align:center;text-decoration:none;
+    border:1.5px solid var(--line);border-radius:11px;background:#fff;
+    color:var(--ink);padding:14px;min-height:52px;font-weight:600;margin-top:10px;
+  }
+
+  .foot{margin:18px 0 0;font-size:13px;color:var(--muted);text-align:center;line-height:1.55}
+
+  .hidden{display:none !important}
+  .err{
+    background:#fff;border:1.5px solid #d9534f;border-radius:var(--radius);
+    padding:18px;margin-top:24px;color:#7c2420;
+  }
+  .err code{background:#f4eceb;padding:1px 5px;border-radius:4px;font-size:14px}
+
+  @media (prefers-reduced-motion:no-preference){
+    .card{transition:opacity .2s ease}
+  }
+</style>
+</head>
+<body>
+
+<header class="top" id="top" hidden>
+  <div class="top-inner">
+    <h1 class="biz" id="bizName"></h1>
+    <span class="rating hidden" id="ratingPill">
+      <span aria-hidden="true">&#9733;</span><b id="ratingVal"></b><span id="ratingCount"></span>
+    </span>
+  </div>
+</header>
+
+<main class="wrap" id="app" hidden>
+
+  <!-- Step 1: language -->
+  <section class="card">
+    <div class="step"><span class="step-n">1</span><h2 id="t1"></h2></div>
+    <div class="langs" id="langs" role="group"></div>
+  </section>
+
+  <!-- Step 2: rating -->
+  <section class="card">
+    <div class="step"><span class="step-n">2</span><h2 id="t2"></h2></div>
+    <div class="stars" id="stars" role="group"></div>
+    <div class="star-word" id="starWord"></div>
+  </section>
+
+  <!-- Step 3a: happy path, tap what was good -->
+  <section class="card hidden" id="chipCard">
+    <div class="step"><span class="step-n">3</span><h2 id="t3"></h2></div>
+    <p class="hint" id="h3"></p>
+    <div class="chips" id="chips" role="group"></div>
+  </section>
+
+  <!-- Step 4a: the draft -->
+  <section class="card hidden" id="draftCard">
+    <div class="step"><span class="step-n">4</span><h2 id="t4"></h2></div>
+    <p class="hint" id="h4"></p>
+    <textarea id="draft" rows="7" spellcheck="false"></textarea>
+    <button class="btn-small" id="shuffleBtn" type="button"></button>
+    <button class="btn btn-ghost" id="copyBtn" type="button"></button>
+    <a class="btn btn-solid" id="openBtn" href="#" target="_blank" rel="noopener" aria-disabled="true"></a>
+    <p class="paste-hint" id="pasteHint"></p>
+    <p class="signin" id="signinNote"></p>
+  </section>
+
+  <!-- Step 3b: low rating path -->
+  <section class="card hidden" id="lowCard">
+    <div class="step"><span class="step-n">3</span><h2 id="lowT"></h2></div>
+    <p class="hint" id="lowB"></p>
+    <a class="btn btn-ghost" id="lowGoogleBtn" href="#" target="_blank" rel="noopener"></a>
+    <a class="wa" id="lowWaBtn" href="#" target="_blank" rel="noopener"></a>
+  </section>
+
+  <a class="wa hidden" id="waBtn" href="#" target="_blank" rel="noopener"></a>
+  <p class="foot" id="foot"></p>
+</main>
+
+<div class="wrap"><div class="err hidden" id="err"></div></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------------------------------------------------------
+     UI text. These strings are the same for every client, so they
+     live here and not in the client JSON file.
+     --------------------------------------------------------------- */
+  var UI = {
+    hi: {
+      native:"हिंदी", htmlLang:"hi",
+      t1:"भाषा चुनें",
+      t2:"आपका अनुभव कैसा रहा?",
+      stars:["बहुत खराब","खराब","ठीक-ठाक","अच्छा","बहुत अच्छा"],
+      t3:"क्या अच्छा लगा?",
+      h3:"जो बातें सच में सही लगीं, उन पर टैप करें। कम से कम दो चुनें।",
+      t4:"आपका रिव्यू",
+      h4:"इसे पढ़ें। आप अपने शब्दों में कुछ भी बदल सकती हैं।",
+      shuffle:"दूसरे शब्दों में लिखें",
+      copy:"रिव्यू कॉपी करें",
+      copied:"कॉपी हो गया",
+      open:"गूगल खोलें और पेस्ट करें",
+      pasteHint:"गूगल का बॉक्स खुलेगा। बॉक्स में दबाकर रखें, फिर पेस्ट दबाएँ।",
+      signin:"रिव्यू पोस्ट करने के लिए गूगल अकाउंट में साइन इन होना ज़रूरी है।",
+      pickMore:"कम से कम दो चीज़ें चुनें",
+      lowT:"हमें सीधे बताइए",
+      lowB:"आप गूगल पर अपने शब्दों में लिख सकती हैं। और अगर कुछ ठीक नहीं था तो हमें व्हाट्सएप पर बताइए, हम सुधारेंगे।",
+      lowGoogle:"गूगल पर अपने शब्दों में लिखें",
+      wa:"व्हाट्सएप पर बात करें",
+      foot:"यह पेज आपका रिव्यू कहीं नहीं भेजता और कुछ सेव नहीं करता। आप खुद गूगल पर पोस्ट करती हैं।"
+    },
+    en: {
+      native:"English", htmlLang:"en",
+      t1:"Choose your language",
+      t2:"How was your stay?",
+      stars:["Very bad","Bad","Okay","Good","Very good"],
+      t3:"What was good?",
+      h3:"Tap the things that were actually true for you. Pick at least two.",
+      t4:"Your review",
+      h4:"Read it. You can change any of it in your own words.",
+      shuffle:"Try different wording",
+      copy:"Copy the review",
+      copied:"Copied",
+      open:"Open Google and paste",
+      pasteHint:"The Google box will open. Press and hold inside the box, then tap Paste.",
+      signin:"You need to be signed in to a Google account to post a review.",
+      pickMore:"Pick at least two things",
+      lowT:"Tell us directly",
+      lowB:"You can write on Google in your own words. And if something was not right, tell us on WhatsApp and we will fix it.",
+      lowGoogle:"Write on Google in your own words",
+      wa:"Talk to us on WhatsApp",
+      foot:"This page does not send or store your review. You post it on Google yourself."
+    },
+    hinglish: {
+      native:"Hinglish", htmlLang:"hi-Latn",
+      t1:"Apni bhasha chunein",
+      t2:"Aapka experience kaisa raha?",
+      stars:["Bahut kharab","Kharab","Theek-thaak","Accha","Bahut accha"],
+      t3:"Kya accha laga?",
+      h3:"Jo baatein sach me sahi lagi, un par tap karein. Kam se kam do chunein.",
+      t4:"Aapka review",
+      h4:"Ise padhein. Aap apne shabdon me kuch bhi badal sakti hain.",
+      shuffle:"Doosre shabdon me likhein",
+      copy:"Review copy karein",
+      copied:"Copy ho gaya",
+      open:"Google kholein aur paste karein",
+      pasteHint:"Google ka box khulega. Box me dabakar rakhein, phir Paste dabayein.",
+      signin:"Review post karne ke liye Google account me sign in hona zaroori hai.",
+      pickMore:"Kam se kam do cheezein chunein",
+      lowT:"Humein seedha bataiye",
+      lowB:"Aap Google par apne shabdon me likh sakti hain. Aur agar kuch theek nahi tha to humein WhatsApp par bataiye, hum sudhaarenge.",
+      lowGoogle:"Google par apne shabdon me likhein",
+      wa:"WhatsApp par baat karein",
+      foot:"Yeh page aapka review kahin nahi bhejta aur kuch save nahi karta. Aap khud Google par post karti hain."
+    },
+    gu: {
+      native:"ગુજરાતી", htmlLang:"gu",
+      t1:"તમારી ભાષા પસંદ કરો",
+      t2:"તમારો અનુભવ કેવો રહ્યો?",
+      stars:["ખૂબ ખરાબ","ખરાબ","ઠીક","સારો","ખૂબ સારો"],
+      t3:"શું સારું લાગ્યું?",
+      h3:"જે વાતો ખરેખર સાચી લાગી તેના પર ટેપ કરો. ઓછામાં ઓછી બે પસંદ કરો.",
+      t4:"તમારો રિવ્યૂ",
+      h4:"આ વાંચો. તમે તમારા શબ્દોમાં કંઈ પણ બદલી શકો છો.",
+      shuffle:"બીજા શબ્દોમાં લખો",
+      copy:"રિવ્યૂ કોપી કરો",
+      copied:"કોપી થઈ ગયું",
+      open:"ગૂગલ ખોલો અને પેસ્ટ કરો",
+      pasteHint:"ગૂગલનું બોક્સ ખૂલશે. બોક્સમાં દબાવી રાખો, પછી પેસ્ટ દબાવો.",
+      signin:"રિવ્યૂ પોસ્ટ કરવા માટે ગૂગલ એકાઉન્ટમાં સાઇન ઇન હોવું જરૂરી છે.",
+      pickMore:"ઓછામાં ઓછી બે વસ્તુ પસંદ કરો",
+      lowT:"અમને સીધું જણાવો",
+      lowB:"તમે ગૂગલ પર તમારા શબ્દોમાં લખી શકો છો. અને જો કંઈ બરાબર ન હતું તો અમને વોટ્સએપ પર જણાવો, અમે સુધારીશું.",
+      lowGoogle:"ગૂગલ પર તમારા શબ્દોમાં લખો",
+      wa:"વોટ્સએપ પર વાત કરો",
+      foot:"આ પેજ તમારો રિવ્યૂ ક્યાંય મોકલતું નથી અને કશું સેવ કરતું નથી. તમે જાતે ગૂગલ પર પોસ્ટ કરો છો."
+    },
+    mwr: {
+      native:"मेवाड़ी", htmlLang:"hi",
+      t1:"आपरी भासा चुणो",
+      t2:"थांरो अनुभव कियां रैयो?",
+      stars:["घणो खराब","खराब","ठीक","चोखो","घणो चोखो"],
+      t3:"कांई चोखो लाग्यो?",
+      h3:"जिकी बातां साचीं लागी, उणां पर टैप करो। कम सूं कम दो चुणो।",
+      t4:"थांरो रिव्यू",
+      h4:"ईं नै बांचो। थे आपरा सबदां में कीं ई बदळ सको हो।",
+      shuffle:"दूजा सबदां में लिखो",
+      copy:"रिव्यू कॉपी करो",
+      copied:"कॉपी हुयग्यो",
+      open:"गूगल खोलो अर पेस्ट करो",
+      pasteHint:"गूगल रो बॉक्स खुलैला। बॉक्स में दाब'र राखो, पछै पेस्ट दाबो।",
+      signin:"रिव्यू पोस्ट करण खातर गूगल खातै में साइन इन होवणो जरूरी है।",
+      pickMore:"कम सूं कम दो चीजां चुणो",
+      lowT:"म्हांनै सीधो बताओ",
+      lowB:"थे गूगल पर आपरा सबदां में लिख सको हो। अर जे कीं ठीक नीं हो तो म्हांनै व्हाट्सएप पर बताओ, म्हे सुधारांला।",
+      lowGoogle:"गूगल पर आपरा सबदां में लिखो",
+      wa:"व्हाट्सएप पर बात करो",
+      foot:"यो पेज थांरो रिव्यू कठैई नीं भेजै अर कीं सेव नीं करै। थे खुद गूगल पर पोस्ट करो हो।"
+    }
+  };
+
+  /* --------------------------- helpers --------------------------- */
+
+  var $ = function(id){ return document.getElementById(id); };
+
+  function showError(title, detail){
+    var box = $("err");
+    box.classList.remove("hidden");
+    var h = document.createElement("strong");
+    h.textContent = title;
+    var p = document.createElement("p");
+    p.style.margin = "8px 0 0";
+    p.textContent = detail;
+    box.appendChild(h);
+    box.appendChild(p);
+  }
+
+  function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function shuffled(arr){
+    var a = arr.slice(), i, j, t;
+    for(i = a.length - 1; i > 0; i--){
+      j = Math.floor(Math.random() * (i + 1));
+      t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  // Replace {name}, {city} and {landmark} with the words for this language.
+  function fill(text, words){
+    return String(text)
+      .replace(/\{name\}/g, words.name)
+      .replace(/\{city\}/g, words.city)
+      .replace(/\{landmark\}/g, words.landmark);
+  }
+
+  function byLang(map, lang, fallback){
+    if(!map) return fallback || "";
+    if(map[lang]) return map[lang];
+    if(map.en) return map.en;
+    return fallback || "";
+  }
+
+  function copyText(text){
+    // The textarea trick runs first, inside the tap, and works on almost
+    // every phone. The modern API runs as a second try. Some browsers leave
+    // that promise hanging, so we never wait on it for more than 400 ms.
+    var ok = legacyCopy(text);
+    if(navigator.clipboard && window.isSecureContext){
+      var modern = navigator.clipboard.writeText(text).then(
+        function(){ return true; },
+        function(){ return ok; });
+      var timer = new Promise(function(r){ setTimeout(function(){ r(ok); }, 400); });
+      return Promise.race([modern, timer]);
+    }
+    return Promise.resolve(ok);
+  }
+
+  function legacyCopy(text){
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.top = "-1000px";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, ta.value.length);
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch(e){ ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  /* --------------------------- state --------------------------- */
+
+  var cfg = null;
+  var lang = "hi";
+  var rating = 0;
+  var picked = [];   // chip ids, in the order they were tapped
+
+  /* --------------------------- boot --------------------------- */
+
+  var params = new URLSearchParams(location.search);
+  var slug = params.get("c") || "";
+
+  // Only plain slugs. This stops anyone pointing the fetch somewhere else.
+  if(!/^[a-z0-9][a-z0-9-]{0,39}$/.test(slug)){
+    showError("Wrong link",
+      "This link is missing the business code. It should end with ?c=name, for example ?c=sukham.");
+    throw new Error("bad slug");
+  }
+
+  fetch("clients/" + slug + ".json", {cache:"no-store"})
+    .then(function(r){
+      if(!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(start)
+    .catch(function(e){
+      showError("Could not load this business",
+        "The file clients/" + slug + ".json did not load. " + e.message);
+    });
+
+  function start(data){
+    cfg = data;
+
+    // Optional per-client screen text. A client file can hold
+    // "ui": { "hi": { "h4": "..." } } to change any line above,
+    // for example the feminine Hindi forms for a men's PG or a shop.
+    if(cfg.ui){
+      Object.keys(cfg.ui).forEach(function(l){
+        if(!UI[l]) return;
+        Object.keys(cfg.ui[l]).forEach(function(k){ UI[l][k] = cfg.ui[l][k]; });
+      });
+    }
+
+    // brand colour
+    if(cfg.brand && cfg.brand.colour){
+      document.documentElement.style.setProperty("--brand", cfg.brand.colour);
+    }
+    if(cfg.brand && cfg.brand.colourInk){
+      document.documentElement.style.setProperty("--ink", cfg.brand.colourInk);
+    }
+
+    // Cloudflare Web Analytics, only if a token is set in the client file.
+    var token = cfg.analytics && cfg.analytics.cloudflareToken;
+    if(token){
+      var s = document.createElement("script");
+      s.defer = true;
+      s.src = "https://static.cloudflareinsights.com/beacon.min.js";
+      s.setAttribute("data-cf-beacon", JSON.stringify({token: token}));
+      document.head.appendChild(s);
+    }
+
+    $("bizName").textContent = (cfg.business && cfg.business.name) || "";
+    document.title = ((cfg.business && cfg.business.name) || "Review") + " | Google review";
+
+    var g = cfg.google || {};
+    if(g.rating){
+      $("ratingPill").classList.remove("hidden");
+      $("ratingVal").textContent = String(g.rating);
+      $("ratingCount").textContent = g.reviewCount ? "(" + g.reviewCount + ")" : "";
+    }
+
+    lang = cfg.defaultLanguage && UI[cfg.defaultLanguage] ? cfg.defaultLanguage : "hi";
+
+    buildLangs();
+    buildStars();
+    buildChips();
+    applyLang();
+
+    $("top").hidden = false;
+    $("app").hidden = false;
+  }
+
+  /* --------------------------- build UI --------------------------- */
+
+  function buildLangs(){
+    var box = $("langs");
+    box.textContent = "";
+    (cfg.languages || ["hi","en"]).forEach(function(code){
+      if(!UI[code]) return;
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "lang";
+      b.textContent = UI[code].native;
+      b.setAttribute("aria-pressed", code === lang ? "true" : "false");
+      b.addEventListener("click", function(){
+        lang = code;
+        Array.prototype.forEach.call(box.children, function(el){
+          el.setAttribute("aria-pressed", el === b ? "true" : "false");
+        });
+        applyLang();
+        buildChips();
+        if(rating >= 4 && picked.length) buildDraft();
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function buildStars(){
+    var box = $("stars");
+    box.textContent = "";
+    for(var i = 1; i <= 5; i++){
+      (function(n){
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "star";
+        b.textContent = "★";
+        b.setAttribute("aria-label", n + " of 5");
+        b.addEventListener("click", function(){ setRating(n); });
+        box.appendChild(b);
+      })(i);
+    }
+  }
+
+  function setRating(n){
+    rating = n;
+    Array.prototype.forEach.call($("stars").children, function(el, i){
+      el.classList.toggle("on", i < n);
+    });
+    $("starWord").textContent = UI[lang].stars[n - 1];
+
+    var low = n <= 3;
+    $("chipCard").classList.toggle("hidden", low);
+    $("draftCard").classList.toggle("hidden", low || picked.length < 2);
+    $("lowCard").classList.toggle("hidden", !low);
+    $("waBtn").classList.toggle("hidden", low);
+
+    if(low) setupLowCard();
+    if(!low && picked.length >= 2) buildDraft();
+  }
+
+  function buildChips(){
+    var box = $("chips");
+    box.textContent = "";
+    (cfg.chips || []).forEach(function(chip){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.textContent = byLang(chip.label, lang, chip.id);
+      b.setAttribute("aria-pressed", picked.indexOf(chip.id) > -1 ? "true" : "false");
+      b.addEventListener("click", function(){
+        var at = picked.indexOf(chip.id);
+        if(at > -1) picked.splice(at, 1); else picked.push(chip.id);
+        b.setAttribute("aria-pressed", at > -1 ? "false" : "true");
+        if(picked.length >= 2){
+          $("draftCard").classList.remove("hidden");
+          buildDraft();
+        } else {
+          $("draftCard").classList.add("hidden");
+        }
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function words(){
+    var b = cfg.business || {};
+    return {
+      name: byLang(b.nameByLang, lang, b.name || ""),
+      city: byLang(b.cityByLang, lang, ""),
+      landmark: byLang(b.landmarkByLang, lang, "")
+    };
+  }
+
+  // Build one draft. Called again by the shuffle button for new wording.
+  function buildDraft(){
+    var w = words();
+    var parts = [];
+
+    var openers = (cfg.openers && cfg.openers[lang]) || [];
+    if(openers.length) parts.push(fill(pick(openers), w));
+
+    // Keep the order she tapped, then shuffle lightly so two guests who
+    // tap the same things still get different sentences.
+    var chosen = shuffled(picked);
+    chosen.forEach(function(id){
+      var chip = (cfg.chips || []).filter(function(c){ return c.id === id; })[0];
+      if(!chip) return;
+      var lines = (chip.lines && chip.lines[lang]) || (chip.lines && chip.lines.en) || [];
+      if(lines.length) parts.push(fill(pick(lines), w));
+    });
+
+    var closers = (cfg.closers && cfg.closers[lang]) || [];
+    if(closers.length) parts.push(fill(pick(closers), w));
+
+    $("draft").value = parts.join(" ");
+    resetCopyButton();
+    setOpenLink();
+  }
+
+  function setOpenLink(){
+    var pid = (cfg.google && cfg.google.placeId) || "";
+    var href = "go.html?p=" + encodeURIComponent(pid) + "&c=" + encodeURIComponent(slug);
+    $("openBtn").setAttribute("href", href);
+    $("openBtn").setAttribute("aria-disabled", "false");
+    $("lowGoogleBtn").setAttribute("href", href);
+  }
+
+  function resetCopyButton(){
+    var b = $("copyBtn");
+    b.classList.remove("btn-done");
+    b.classList.add("btn-ghost");
+    b.textContent = "1. " + UI[lang].copy;
+  }
+
+  function setupLowCard(){
+    setOpenLink();
+    $("lowGoogleBtn").textContent = UI[lang].lowGoogle;
+    var wa = cfg.whatsapp || {};
+    if(wa.number){
+      $("lowWaBtn").setAttribute("href",
+        "https://wa.me/" + wa.number + (wa.prefill ? "?text=" + encodeURIComponent(wa.prefill) : ""));
+      $("lowWaBtn").textContent = UI[lang].wa;
+      $("lowWaBtn").classList.remove("hidden");
+    } else {
+      $("lowWaBtn").classList.add("hidden");
+    }
+  }
+
+  /* --------------------------- language switch --------------------------- */
+
+  function applyLang(){
+    var t = UI[lang];
+    document.documentElement.setAttribute("lang", t.htmlLang);
+
+    $("t1").textContent = t.t1;
+    $("t2").textContent = t.t2;
+    $("t3").textContent = t.t3;
+    $("h3").textContent = t.h3;
+    $("t4").textContent = t.t4;
+    $("h4").textContent = t.h4;
+    $("shuffleBtn").textContent = t.shuffle;
+    $("openBtn").textContent = "2. " + t.open;
+    $("pasteHint").textContent = t.pasteHint;
+    $("signinNote").textContent = t.signin;
+    $("lowT").textContent = t.lowT;
+    $("lowB").textContent = t.lowB;
+    $("lowGoogleBtn").textContent = t.lowGoogle;
+    $("foot").textContent = t.foot;
+    resetCopyButton();
+
+    if(rating) $("starWord").textContent = t.stars[rating - 1];
+
+    var wa = cfg.whatsapp || {};
+    if(wa.number){
+      var href = "https://wa.me/" + wa.number +
+                 (wa.prefill ? "?text=" + encodeURIComponent(wa.prefill) : "");
+      $("waBtn").setAttribute("href", href);
+      $("waBtn").textContent = t.wa;
+      $("lowWaBtn").setAttribute("href", href);
+      $("lowWaBtn").textContent = t.wa;
+      if(rating >= 4) $("waBtn").classList.remove("hidden");
+    }
+  }
+
+  /* --------------------------- actions --------------------------- */
+
+  $("shuffleBtn").addEventListener("click", function(){
+    if(picked.length >= 2) buildDraft();
+  });
+
+  $("copyBtn").addEventListener("click", function(){
+    var b = this;
+    copyText($("draft").value).then(function(ok){
+      if(!ok) return;
+      b.classList.remove("btn-ghost");
+      b.classList.add("btn-done");
+      b.textContent = "✓ " + UI[lang].copied;
+    });
+  });
+
+  // Copy again on the way out, in case she edited the text after copying.
+  $("openBtn").addEventListener("click", function(){
+    if(!$("draftCard").classList.contains("hidden")) copyText($("draft").value);
+  });
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,925 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:,">
+<title>Review QR dashboard</title>
+<style>
+  :root {
+    --ink: #1d1d1f; --muted: #5f6068; --line: #e1e2e6; --bg: #f5f6f8; --card: #fff;
+    --accent: #1f5fbf; --accent-soft: #eaf1fc;
+    --amber-ink: #7a4b00; --amber-bg: #fff3d6; --amber-line: #f0d48a;
+    --red-ink: #8a1f1f; --red-bg: #fff3f3; --red-line: #e8bcbc;
+    --ok-ink: #1b6b3a; --ok-bg: #e9f6ee;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+    font-size: 16px; line-height: 1.5; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 16px; }
+  h1 { font-size: 20px; margin: 0; }
+  h2 { font-size: 17px; margin: 0 0 10px; }
+  h3 { font-size: 15px; margin: 16px 0 8px; }
+  p { margin: 0 0 8px; }
+  a { color: var(--accent); }
+  code, .mono { font-family: ui-monospace, Consolas, "Courier New", monospace; font-size: 13px; }
+
+  /* top bar */
+  .bar { background: var(--card); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 5; }
+  .bar .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-top: 10px; padding-bottom: 10px; }
+  .bar .count { color: var(--muted); font-size: 14px; }
+  .bar .search { flex: 1 1 240px; min-width: 0; }
+  input, select, textarea { font: inherit; color: inherit; }
+  input[type=text], input[type=search], input[type=number], input[type=tel], select, textarea {
+    width: 100%; min-height: 44px; padding: 8px 10px; border: 1px solid #c9cad1; border-radius: 8px; background: #fff; }
+  textarea { min-height: 260px; font-family: ui-monospace, Consolas, "Courier New", monospace; font-size: 13px; line-height: 1.4; }
+  input:focus, select:focus, textarea:focus, .btn:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  main.wrap { padding-top: 16px; padding-bottom: 20px; }
+  .grid { display: grid; gap: 14px; align-items: start;grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+
+  /* cards */
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; min-width: 0; }
+  .card.error { background: var(--red-bg); border-color: var(--red-line); }
+  .card.error .name { color: var(--red-ink); }
+  .head { display: flex; align-items: center; gap: 10px; }
+  .swatch { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--line); flex: none; background: #ddd; }
+  .name { font-weight: 600; font-size: 17px; line-height: 1.3; overflow-wrap: anywhere; }
+  .slug { color: var(--muted); font-size: 13px; }
+  .meta { color: var(--muted); font-size: 14px; margin: 8px 0 0; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .tag { display: inline-block; font-size: 13px; line-height: 1.3; padding: 4px 8px; border-radius: 6px; border: 1px solid transparent; }
+  .tag.amber { color: var(--amber-ink); background: var(--amber-bg); border-color: var(--amber-line); }
+  .tag.red { color: var(--red-ink); background: var(--red-bg); border-color: var(--red-line); }
+  .tag.ok { color: var(--ok-ink); background: var(--ok-bg); }
+  .pill { display: inline-block; font-size: 13px; padding: 2px 9px; border-radius: 999px; background: var(--accent-soft); color: #173f7d; }
+  .section { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .label { font-size: 13px; color: var(--muted); margin: 0 0 4px; }
+  .linkrow { display: flex; gap: 8px; align-items: stretch; }
+  .linkrow code { flex: 1 1 auto; min-width: 0; background: var(--bg); border-radius: 8px; padding: 8px 10px;
+    overflow-wrap: anywhere; display: flex; align-items: center; }
+  .qr { display: flex; gap: 12px; align-items: center; }
+  .qr img, .qr .noqr { width: 120px; height: 120px; flex: none; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+  .qr img { object-fit: contain; image-rendering: pixelated; }
+  .noqr { display: flex; align-items: center; justify-content: center; text-align: center; font-size: 12px; color: var(--muted);
+    padding: 8px; background: repeating-linear-gradient(45deg, #fafafa, #fafafa 8px, #f1f1f3 8px, #f1f1f3 16px) !important; }
+  .qr .col { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .actions .wide { grid-column: 1 / -1; }
+  .small { font-size: 13px; color: var(--muted); }
+  details.problems { margin-top: 8px; font-size: 13px; }
+  details.problems summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--red-ink); }
+  details.problems ul { margin: 4px 0 0; padding-left: 18px; }
+
+  /* buttons */
+  .btn { display: inline-flex; align-items: center; justify-content: center; text-align: center; gap: 6px;
+    min-height: 44px; padding: 6px 14px; border-radius: 8px; border: 1px solid #c9cad1; background: #fff;
+    color: var(--ink); font: inherit; font-size: 15px; line-height: 1.25; text-decoration: none; cursor: pointer; }
+  .btn:hover { background: #f3f4f6; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary:hover { background: #1a51a3; }
+  .btn.small-btn { font-size: 14px; padding: 6px 12px; }
+  .done { font-size: 13px; color: var(--ok-ink); min-height: 1em; }
+
+  /* panels */
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; margin-top: 16px; }
+  .panel > summary { list-style: none; cursor: pointer; padding: 14px; min-height: 44px; font-weight: 600; font-size: 17px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .panel > summary::-webkit-details-marker { display: none; }
+  .panel > summary::after { content: "Open"; font-weight: 400; font-size: 14px; color: var(--accent); }
+  .panel[open] > summary::after { content: "Close"; }
+  .panel .body { padding: 0 14px 16px; }
+  .box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-top: 16px; }
+
+  /* form */
+  .form { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); }
+  .field label, .field .flabel { display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .field .hint { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .field.full { grid-column: 1 / -1; }
+  .checks { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+  .checks label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 400; cursor: pointer; }
+  .checks input { width: 20px; height: 20px; margin: 0; }
+  input[type=color] { width: 64px; height: 44px; padding: 2px; border: 1px solid #c9cad1; border-radius: 8px; background: #fff; }
+  .colourrow { display: flex; align-items: center; gap: 10px; }
+  fieldset.lang { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px 12px; margin: 0; min-width: 0; display: grid; gap: 8px; }
+  fieldset.lang legend { font-weight: 600; font-size: 14px; padding: 0 4px; }
+  .langgrid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .msgs { margin-top: 12px; }
+  .msgs ul { margin: 6px 0 0; padding-left: 20px; }
+  .msgs .bad { background: var(--red-bg); border: 1px solid var(--red-line); color: var(--red-ink); border-radius: 8px; padding: 10px 12px; }
+  .msgs .warn { background: var(--amber-bg); border: 1px solid var(--amber-line); color: var(--amber-ink); border-radius: 8px; padding: 10px 12px; margin-top: 8px; }
+  .msgs .good { background: var(--ok-bg); color: var(--ok-ink); border-radius: 8px; padding: 10px 12px; }
+  .steps { margin-top: 16px; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; background: #fafbfc; }
+  .steps ol { margin: 0; padding-left: 20px; }
+  .steps li { margin-bottom: 10px; }
+  pre.out { margin: 6px 0; padding: 10px; background: #fff; border: 1px solid var(--line); border-radius: 8px;
+    white-space: pre-wrap; overflow-wrap: anywhere; font-family: ui-monospace, Consolas, "Courier New", monospace; font-size: 13px; }
+
+  footer.wrap { color: var(--muted); font-size: 13px; padding-bottom: 28px; }
+  [hidden] { display: none !important; }
+  @media (min-width: 700px) { .wrap { padding: 0 24px; } }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="wrap">
+    <h1>Review QR dashboard</h1>
+    <span class="count" id="count">Loading clients</span>
+    <div class="search">
+      <input type="search" id="search" placeholder="Search by name or slug" aria-label="Search clients by name or slug" autocomplete="off">
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="grid" id="cards"></div>
+  <p class="small" id="nomatch" hidden>No client matches this search.</p>
+
+  <details class="panel" id="builder">
+    <summary>Add a new client</summary>
+    <div class="body">
+      <p class="small">Fill this in and download the file. You do not need to edit JSON by hand, except the review lines box at the bottom.</p>
+
+      <div class="form">
+        <div class="field">
+          <label for="b-from">Start from</label>
+          <select id="b-from"><option value="">Blank</option></select>
+          <div class="hint">Copy a similar client so the openers, closers and chips come across. Then change the business facts.</div>
+        </div>
+        <div class="field">
+          <label for="b-slug">Slug</label>
+          <input type="text" id="b-slug" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="for example sukham">
+          <div class="hint">Small letters, numbers and hyphens. Becomes the link ?c=slug.</div>
+        </div>
+        <div class="field">
+          <label for="b-name">Business name</label>
+          <input type="text" id="b-name" autocomplete="off">
+          <div class="hint">As it appears on Google.</div>
+        </div>
+
+        <div class="field full">
+          <span class="flabel">Languages</span>
+          <div class="checks" id="b-langs"></div>
+        </div>
+        <div class="field">
+          <label for="b-default">Default language</label>
+          <select id="b-default"></select>
+        </div>
+        <div class="field">
+          <label for="b-colour">Brand colour</label>
+          <div class="colourrow">
+            <input type="color" id="b-colour" value="#1f5fbf">
+            <code id="b-colour-text">#1f5fbf</code>
+          </div>
+        </div>
+
+        <div class="field full">
+          <span class="flabel">Name, city and landmark in each language</span>
+          <div class="langgrid" id="b-perlang"></div>
+          <div class="hint">Landmark is needed only if the review lines use {landmark}.</div>
+        </div>
+
+        <div class="field">
+          <label for="b-place">Google Place ID</label>
+          <input type="text" id="b-place" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ChIJ...">
+          <div class="row" style="margin-top:6px">
+            <button type="button" class="btn small-btn" id="b-testplace">Test this Place ID</button>
+            <span class="done" id="b-testplace-msg"></span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="b-rating">Google rating</label>
+          <input type="number" id="b-rating" min="1" max="5" step="0.1" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="b-count">Review count</label>
+          <input type="number" id="b-count" min="0" step="1" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label for="b-wa">WhatsApp number with country code</label>
+          <input type="tel" id="b-wa" inputmode="numeric" placeholder="91XXXXXXXXXX" autocomplete="off">
+          <div class="hint">Digits only, no plus sign or spaces. Leave empty to hide the WhatsApp button.</div>
+        </div>
+        <div class="field full">
+          <label for="b-waprefill">WhatsApp prefill message</label>
+          <input type="text" id="b-waprefill" autocomplete="off">
+          <div class="hint">What the guest's message starts with when she taps WhatsApp on a low rating.</div>
+        </div>
+
+        <div class="field full">
+          <label for="b-texts">Openers, closers and chips (JSON)</label>
+          <textarea id="b-texts" spellcheck="false" autocapitalize="off"></textarea>
+          <div class="hint">Words in curly brackets, like {name}, {city} and {landmark}, are filled in per language. Each chip needs a label and at least 3 lines in every language that is ticked. Check the lines fit the new business.</div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:14px">
+        <button type="button" class="btn primary" id="b-download">Download new-client.json</button>
+      </div>
+      <div class="msgs" id="b-msgs" aria-live="polite"></div>
+
+      <div class="steps">
+        <h3 style="margin-top:0">After you download</h3>
+        <ol>
+          <li>On GitHub, open the <code>clients</code> folder and upload <code class="js-file">slug.json</code>.</li>
+          <li>Add the slug to <code>clients/_list.json</code>. Replace the whole file with this:
+            <pre class="out" id="b-list"></pre>
+            <button type="button" class="btn small-btn" id="b-copylist">Copy this</button> <span class="done" id="b-copylist-msg"></span>
+          </li>
+          <li>Run <code id="b-cmd">py tools/make_qr.py slug</code> on this PC, then upload <code class="js-png">qr/slug.png</code> and <code class="js-svg">qr/slug.svg</code> into the <code>qr</code> folder on GitHub.</li>
+          <li>Reload this page. Open the new card, check it shows no warnings, and test the review page on your phone.</li>
+        </ol>
+      </div>
+    </div>
+  </details>
+
+  <section class="box">
+    <h2>Scans and taps</h2>
+    <p>Counts are in Cloudflare Web Analytics. Page views of <code>/</code> are QR scans, and page views of <code>/go.html</code> are taps through to Google.</p>
+    <a class="btn" href="https://dash.cloudflare.com/?to=/:account/web-analytics" target="_blank" rel="noopener noreferrer">Open Cloudflare Web Analytics</a>
+  </section>
+</main>
+
+<footer class="wrap">Static site. No API keys. No database. Page built 3 Oct 2026.</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var PUBLIC_BASE = 'https://naman24122-source.github.io/reviews/';
+  var SLUG_RE = /^[a-z0-9][a-z0-9-]{0,39}$/;
+  var PLACE_RE = /^[A-Za-z0-9_-]{20,80}$/;
+  var LANGS = [
+    { code: 'hi', name: 'Hindi' },
+    { code: 'en', name: 'English' },
+    { code: 'hinglish', name: 'Hinglish' },
+    { code: 'gu', name: 'Gujarati' },
+    { code: 'mwr', name: 'Mewari' }
+  ];
+  var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var MEWARI_NOTE = 'The Mewari lines were written by Claude and have NOT been checked by a Mewari speaker. Get a local person to read them once before you print the QR.';
+  var DEFAULT_PRINT = {
+    headlineHi: 'हमें गूगल पर रिव्यू दें',
+    headlineEn: 'Leave us a Google review',
+    subHi: 'कैमरा खोलकर QR स्कैन करें। 30 सेकंड लगेंगे।',
+    subEn: 'Scan with your phone camera. It takes 30 seconds.'
+  };
+
+  var slugs = [];      // from clients/_list.json
+  var loaded = {};     // slug -> parsed client JSON
+  var cardsBox = document.getElementById('cards');
+
+  /* ---------- small helpers ---------- */
+
+  function $(id) { return document.getElementById(id); }
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) { n.className = cls; }
+    if (text !== undefined && text !== null) { n.textContent = String(text); }
+    return n;
+  }
+
+  function langName(code) {
+    for (var i = 0; i < LANGS.length; i++) { if (LANGS[i].code === code) { return LANGS[i].name; } }
+    return code;
+  }
+
+  function isObj(v) { return v !== null && typeof v === 'object' && !Array.isArray(v); }
+
+  function safeHttps(url) {
+    if (typeof url !== 'string') { return ''; }
+    try {
+      var u = new URL(url);
+      return u.protocol === 'https:' ? u.href : '';
+    } catch (e) { return ''; }
+  }
+
+  function linkBtn(text, href, cls, newTab) {
+    var a = el('a', 'btn' + (cls ? ' ' + cls : ''), text);
+    a.href = href;
+    if (newTab) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+    return a;
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(function () { return legacyCopy(text); });
+    }
+    return legacyCopy(text);
+  }
+
+  function legacyCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.top = '-1000px';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok ? Promise.resolve() : Promise.reject(new Error('copy failed'));
+  }
+
+  function wireCopy(btn, msg, getText) {
+    btn.addEventListener('click', function () {
+      copyText(getText()).then(function () { msg.textContent = 'Copied'; },
+        function () { msg.textContent = 'Could not copy. Select the text and copy it.'; });
+      setTimeout(function () { msg.textContent = ''; }, 2500);
+    });
+  }
+
+  function parseDay(s) {
+    var m = /^(\d{1,2})\s+([A-Za-z]{3})[A-Za-z]*\s+(\d{4})$/.exec(String(s || '').trim());
+    if (!m) { return null; }
+    var mi = MONTHS.indexOf(m[2].charAt(0).toUpperCase() + m[2].slice(1).toLowerCase());
+    if (mi < 0) { return null; }
+    return new Date(Number(m[3]), mi, Number(m[1]));
+  }
+
+  function todayText() {
+    var d = new Date();
+    return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  function publicLink(slug) { return PUBLIC_BASE + '?c=' + encodeURIComponent(slug); }
+
+  /* ---------- config checks (used by cards and the builder) ---------- */
+
+  // Returns a list of plain English problems with the review text.
+  function checkTexts(cfg, langs) {
+    var out = [];
+    ['openers', 'closers'].forEach(function (key) {
+      var block = cfg[key];
+      if (!isObj(block)) { out.push('"' + key + '" is missing.'); return; }
+      langs.forEach(function (l) {
+        var arr = block[l];
+        if (!Array.isArray(arr) || !arr.length) { out.push(key + ': no ' + langName(l) + ' lines.'); }
+        else if (arr.some(function (t) { return typeof t !== 'string' || !t.trim(); })) {
+          out.push(key + ': an empty ' + langName(l) + ' line.');
+        }
+      });
+    });
+    var chips = cfg.chips;
+    if (!Array.isArray(chips) || !chips.length) { out.push('"chips" is missing or empty.'); return out; }
+    var seen = {};
+    chips.forEach(function (chip, i) {
+      var id = isObj(chip) && typeof chip.id === 'string' ? chip.id : '';
+      var who = id ? 'Chip "' + id + '"' : 'Chip ' + (i + 1);
+      if (!isObj(chip)) { out.push(who + ' is not an object.'); return; }
+      if (!/^[a-z0-9-]{1,40}$/.test(id)) { out.push(who + ': id must be small letters, numbers or hyphens.'); }
+      if (id && seen[id]) { out.push(who + ' is listed twice.'); }
+      seen[id] = true;
+      langs.forEach(function (l) {
+        if (!isObj(chip.label) || typeof chip.label[l] !== 'string' || !chip.label[l].trim()) {
+          out.push(who + ': no ' + langName(l) + ' label.');
+        }
+        var lines = isObj(chip.lines) ? chip.lines[l] : null;
+        if (!Array.isArray(lines) || !lines.length) {
+          out.push(who + ': no ' + langName(l) + ' lines.');
+        } else {
+          var good = lines.filter(function (t) { return typeof t === 'string' && t.trim(); }).length;
+          if (good < 3) { out.push(who + ': only ' + good + ' ' + langName(l) + ' line' + (good === 1 ? '' : 's') + ', needs 3.'); }
+        }
+      });
+    });
+    return out;
+  }
+
+  function enabledLangs(cfg) {
+    return Array.isArray(cfg.languages) ? cfg.languages.filter(function (l) { return typeof l === 'string'; }) : [];
+  }
+
+  /* ---------- cards ---------- */
+
+  function errorCard(slug, file, reason) {
+    var card = el('div', 'card error');
+    card.setAttribute('data-search', String(slug).toLowerCase());
+    card.appendChild(el('div', 'name', 'Could not load ' + file));
+    card.appendChild(el('p', 'meta', reason));
+    card.appendChild(el('p', 'meta', 'Check the file exists in the clients folder on GitHub and that it is valid JSON.'));
+    return card;
+  }
+
+  function clientCard(slug, cfg) {
+    var biz = isObj(cfg.business) ? cfg.business : {};
+    var google = isObj(cfg.google) ? cfg.google : {};
+    var brand = isObj(cfg.brand) ? cfg.brand : {};
+    var name = typeof biz.name === 'string' && biz.name ? biz.name : slug;
+    var card = el('article', 'card');
+    card.setAttribute('data-search', (name + ' ' + slug).toLowerCase());
+
+    // name, swatch, slug
+    var head = el('div', 'head');
+    var sw = el('span', 'swatch');
+    var colour = typeof brand.colour === 'string' ? brand.colour : '';
+    if (/^#[0-9a-fA-F]{3,8}$/.test(colour)) { sw.style.background = colour; }
+    sw.title = colour ? 'Brand colour ' + colour : 'No brand colour';
+    head.appendChild(sw);
+    var nm = el('div');
+    nm.appendChild(el('div', 'name', name));
+    nm.appendChild(el('div', 'slug', 'slug: ' + slug + (colour ? ', colour ' + colour : '')));
+    head.appendChild(nm);
+    card.appendChild(head);
+
+    // rating
+    var tags = el('div', 'tags');
+    var bits = [];
+    if (typeof google.rating === 'number') { bits.push(google.rating + ' stars'); }
+    if (typeof google.reviewCount === 'number') { bits.push(google.reviewCount + ' reviews'); }
+    var checkedText = google.ratingCheckedOn ? 'checked ' + google.ratingCheckedOn : 'no check date';
+    card.appendChild(el('p', 'meta', (bits.length ? bits.join(', ') : 'No rating') + ', ' + checkedText));
+    var checked = parseDay(google.ratingCheckedOn);
+    if (!checked || (Date.now() - checked.getTime()) / 86400000 > 30) {
+      var t = el('span', 'tag amber', 'Update rating');
+      t.title = checked ? 'Rating was checked more than 30 days ago.' : 'Check date missing or not in the "30 Sep 2026" form.';
+      tags.appendChild(t);
+    }
+
+    // config checks
+    var langs = enabledLangs(cfg);
+    var problems = checkTexts(cfg, langs);
+    var placeOk = PLACE_RE.test(String(google.placeId || ''));
+    if (!placeOk) { problems.unshift('Google Place ID is missing or not valid.'); }
+    if (!langs.length) { problems.unshift('No languages are enabled.'); }
+    if (cfg.slug !== slug) { problems.unshift('The "slug" inside the file is "' + String(cfg.slug) + '", not "' + slug + '".'); }
+    if (isObj(cfg.notes) && cfg.notes.mewari) {
+      var mt = el('span', 'tag amber', 'Mewari lines unchecked');
+      mt.title = String(cfg.notes.mewari);
+      tags.appendChild(mt);
+    }
+    if (problems.length) {
+      tags.appendChild(el('span', 'tag red', problems.length + ' config problem' + (problems.length === 1 ? '' : 's')));
+    } else {
+      tags.appendChild(el('span', 'tag ok', 'Config check passed'));
+    }
+    card.appendChild(tags);
+    if (problems.length) {
+      var det = el('details', 'problems');
+      det.appendChild(el('summary', null, 'Show problems'));
+      var ul = el('ul');
+      problems.forEach(function (p) { ul.appendChild(el('li', null, p)); });
+      det.appendChild(ul);
+      card.appendChild(det);
+    }
+
+    // review link
+    var link = publicLink(slug);
+    var sec1 = el('div', 'section');
+    sec1.appendChild(el('p', 'label', 'Review link'));
+    var row = el('div', 'linkrow');
+    row.appendChild(el('code', null, link));
+    var copyBtn = el('button', 'btn small-btn', 'Copy');
+    copyBtn.type = 'button';
+    row.appendChild(copyBtn);
+    sec1.appendChild(row);
+    var copyMsg = el('div', 'done');
+    sec1.appendChild(copyMsg);
+    wireCopy(copyBtn, copyMsg, function () { return link; });
+    card.appendChild(sec1);
+
+    // QR
+    var sec2 = el('div', 'section qr');
+    var img = el('img');
+    img.alt = 'QR code for ' + name;
+    img.width = 120; img.height = 120;
+    img.loading = 'lazy';
+    var col = el('div', 'col');
+    var png = linkBtn('Download PNG', 'qr/' + slug + '.png', 'small-btn');
+    png.setAttribute('download', slug + '-qr.png');
+    var svg = linkBtn('Download SVG', 'qr/' + slug + '.svg', 'small-btn');
+    svg.setAttribute('download', slug + '-qr.svg');
+    col.appendChild(png);
+    col.appendChild(svg);
+    img.addEventListener('error', function () {
+      var ph = el('div', 'noqr', 'No QR image yet');
+      img.replaceWith(ph);
+      col.textContent = '';
+      col.appendChild(el('span', 'small', 'Run py tools/make_qr.py ' + slug + ' and upload qr/' + slug + '.png and .svg.'));
+    });
+    img.src = 'qr/' + slug + '.png';
+    sec2.appendChild(img);
+    sec2.appendChild(col);
+    card.appendChild(sec2);
+
+    // actions
+    var sec3 = el('div', 'section actions');
+    var hiName = isObj(biz.nameByLang) && typeof biz.nameByLang.hi === 'string' && biz.nameByLang.hi ? biz.nameByLang.hi : name;
+    var enName = isObj(biz.nameByLang) && typeof biz.nameByLang.en === 'string' && biz.nameByLang.en ? biz.nameByLang.en : name;
+    var waText = hiName + ' के बारे में गूगल पर अपना रिव्यू दें। लिंक खोलें, 30 सेकंड लगेंगे।\n' +
+      'Please leave a Google review for ' + enName + '. Open the link, it takes 30 seconds.\n' + link;
+    sec3.appendChild(linkBtn('Share on WhatsApp', 'https://wa.me/?text=' + encodeURIComponent(waText), 'primary wide', true));
+    sec3.appendChild(linkBtn('Open review page', './?c=' + encodeURIComponent(slug), '', true));
+    var maps = safeHttps(google.mapsUrl);
+    if (maps) {
+      sec3.appendChild(linkBtn('Open Google listing', maps, '', true));
+    } else {
+      sec3.appendChild(el('span', 'small', 'No valid Google listing link'));
+    }
+    if (placeOk) {
+      sec3.appendChild(linkBtn('Test Google review box', 'go.html?p=' + encodeURIComponent(google.placeId) + '&c=' + encodeURIComponent(slug), 'wide', true));
+    }
+    card.appendChild(sec3);
+
+    // languages and chips
+    var sec4 = el('div', 'section');
+    sec4.appendChild(el('p', 'label', 'Languages'));
+    var pills = el('div', 'tags');
+    pills.style.marginTop = '0';
+    langs.forEach(function (l) {
+      var p = el('span', 'pill', langName(l));
+      if (l === cfg.defaultLanguage) { p.textContent = langName(l) + ' (default)'; }
+      pills.appendChild(p);
+    });
+    sec4.appendChild(pills);
+    var nChips = Array.isArray(cfg.chips) ? cfg.chips.length : 0;
+    sec4.appendChild(el('p', 'meta', nChips + ' chip' + (nChips === 1 ? '' : 's') + '. ' +
+      (problems.length ? 'See the config problems above.' : 'Every chip has 3 or more lines in each language.')));
+    card.appendChild(sec4);
+
+    return card;
+  }
+
+  function setCount() {
+    var n = slugs.length;
+    $('count').textContent = n + ' client' + (n === 1 ? '' : 's');
+  }
+
+  function applySearch() {
+    var q = $('search').value.trim().toLowerCase();
+    var shown = 0;
+    Array.prototype.forEach.call(cardsBox.children, function (c) {
+      var hit = !q || (c.getAttribute('data-search') || '').indexOf(q) > -1;
+      c.hidden = !hit;
+      if (hit) { shown++; }
+    });
+    $('nomatch').hidden = shown > 0 || !cardsBox.children.length;
+  }
+  $('search').addEventListener('input', applySearch);
+
+  function loadClient(slug, holder) {
+    if (!SLUG_RE.test(slug)) {
+      holder.replaceWith(errorCard(slug, 'clients/' + slug + '.json', 'This slug in _list.json is not valid. Use small letters, numbers and hyphens.'));
+      return Promise.resolve();
+    }
+    var file = 'clients/' + slug + '.json';
+    return fetch(file, { cache: 'no-store' })
+      .then(function (r) {
+        if (!r.ok) { throw new Error('The server said ' + r.status + (r.status === 404 ? ' (file not found).' : '.')); }
+        return r.text();
+      })
+      .then(function (txt) {
+        var cfg;
+        try { cfg = JSON.parse(txt); } catch (e) { throw new Error('The file is not valid JSON: ' + e.message); }
+        if (!isObj(cfg)) { throw new Error('The file does not hold a JSON object.'); }
+        loaded[slug] = cfg;
+        holder.replaceWith(clientCard(slug, cfg));
+        addStartOption(slug, cfg);
+      })
+      .catch(function (e) {
+        holder.replaceWith(errorCard(slug, file, String(e && e.message ? e.message : e)));
+      });
+  }
+
+  function boot() {
+    fetch('clients/_list.json', { cache: 'no-store' })
+      .then(function (r) {
+        if (!r.ok) { throw new Error('The server said ' + r.status + '.'); }
+        return r.text();
+      })
+      .then(function (txt) {
+        var data;
+        try { data = JSON.parse(txt); } catch (e) { throw new Error('The file is not valid JSON: ' + e.message); }
+        if (!isObj(data) || !Array.isArray(data.clients)) { throw new Error('It must look like {"clients": ["slug"]}.'); }
+        slugs = data.clients.map(String);
+        setCount();
+        updateSteps();
+        var jobs = slugs.map(function (slug) {
+          var holder = el('div', 'card');
+          holder.setAttribute('data-search', slug);
+          holder.appendChild(el('p', 'meta', 'Loading ' + slug));
+          cardsBox.appendChild(holder);
+          return loadClient(slug, holder);
+        });
+        return Promise.all(jobs);
+      })
+      .then(applySearch)
+      .catch(function (e) {
+        $('count').textContent = 'Client list did not load';
+        cardsBox.appendChild(errorCard('_list', 'clients/_list.json', String(e && e.message ? e.message : e)));
+      });
+  }
+
+  /* ---------- builder ---------- */
+
+  var bLangs = $('b-langs');
+  var bPerLang = $('b-perlang');
+  var perLang = {}; // code -> {name, city, landmark, box}
+
+  LANGS.forEach(function (L) {
+    var lab = el('label');
+    var cb = el('input');
+    cb.type = 'checkbox';
+    cb.value = L.code;
+    cb.id = 'b-lang-' + L.code;
+    lab.appendChild(cb);
+    lab.appendChild(document.createTextNode(L.name));
+    bLangs.appendChild(lab);
+    cb.addEventListener('change', syncLangs);
+
+    var fs = el('fieldset', 'lang');
+    fs.appendChild(el('legend', null, L.name + ' (' + L.code + ')'));
+    var refs = { box: fs };
+    [['name', 'Name'], ['city', 'City'], ['landmark', 'Landmark']].forEach(function (f) {
+      var wrap = el('div', 'field');
+      var lb = el('label', null, f[1]);
+      lb.htmlFor = 'b-' + f[0] + '-' + L.code;
+      var inp = el('input');
+      inp.type = 'text';
+      inp.id = 'b-' + f[0] + '-' + L.code;
+      inp.autocomplete = 'off';
+      wrap.appendChild(lb);
+      wrap.appendChild(inp);
+      fs.appendChild(wrap);
+      refs[f[0]] = inp;
+    });
+    perLang[L.code] = refs;
+    bPerLang.appendChild(fs);
+  });
+
+  function checkedLangs() {
+    return LANGS.map(function (L) { return L.code; }).filter(function (c) { return $('b-lang-' + c).checked; });
+  }
+
+  function syncLangs() {
+    var on = checkedLangs();
+    LANGS.forEach(function (L) { perLang[L.code].box.hidden = on.indexOf(L.code) < 0; });
+    var sel = $('b-default');
+    var keep = sel.value;
+    sel.textContent = '';
+    on.forEach(function (c) {
+      var o = el('option', null, langName(c));
+      o.value = c;
+      sel.appendChild(o);
+    });
+    if (on.indexOf(keep) > -1) { sel.value = keep; }
+  }
+
+  $('b-colour').addEventListener('input', function () { $('b-colour-text').textContent = this.value; });
+
+  function addStartOption(slug, cfg) {
+    var o = el('option', null, 'Copy from ' + (isObj(cfg.business) && cfg.business.name ? cfg.business.name : slug) + ' (' + slug + ')');
+    o.value = slug;
+    $('b-from').appendChild(o);
+  }
+
+  function blankTexts(langs) {
+    var empty = {};
+    langs.forEach(function (l) { empty[l] = []; });
+    var label = {}, lines = {};
+    langs.forEach(function (l) { label[l] = ''; lines[l] = ['', '', '']; });
+    return { openers: empty, closers: JSON.parse(JSON.stringify(empty)), chips: [{ id: 'first-chip', label: label, lines: lines }] };
+  }
+
+  function fillFrom(slug) {
+    var src = slug ? loaded[slug] : null;
+    var biz = src && isObj(src.business) ? src.business : {};
+    var g = src && isObj(src.google) ? src.google : {};
+    var wa = src && isObj(src.whatsapp) ? src.whatsapp : {};
+    var brand = src && isObj(src.brand) ? src.brand : {};
+    var langs = src ? enabledLangs(src) : ['hi', 'en', 'hinglish'];
+
+    $('b-slug').value = '';
+    $('b-name').value = typeof biz.name === 'string' ? biz.name : '';
+    LANGS.forEach(function (L) {
+      $('b-lang-' + L.code).checked = langs.indexOf(L.code) > -1;
+      perLang[L.code].name.value = isObj(biz.nameByLang) && typeof biz.nameByLang[L.code] === 'string' ? biz.nameByLang[L.code] : '';
+      perLang[L.code].city.value = isObj(biz.cityByLang) && typeof biz.cityByLang[L.code] === 'string' ? biz.cityByLang[L.code] : '';
+      perLang[L.code].landmark.value = isObj(biz.landmarkByLang) && typeof biz.landmarkByLang[L.code] === 'string' ? biz.landmarkByLang[L.code] : '';
+    });
+    syncLangs();
+    if (src && langs.indexOf(src.defaultLanguage) > -1) { $('b-default').value = src.defaultLanguage; }
+    $('b-place').value = typeof g.placeId === 'string' ? g.placeId : '';
+    $('b-rating').value = typeof g.rating === 'number' ? String(g.rating) : '';
+    $('b-count').value = typeof g.reviewCount === 'number' ? String(g.reviewCount) : '';
+    $('b-wa').value = typeof wa.number === 'string' ? wa.number : '';
+    $('b-waprefill').value = typeof wa.prefill === 'string' ? wa.prefill : '';
+    var c = /^#[0-9a-fA-F]{6}$/.test(brand.colour || '') ? brand.colour.toLowerCase() : '#1f5fbf';
+    $('b-colour').value = c;
+    $('b-colour-text').textContent = c;
+    var texts = src ? { openers: src.openers, closers: src.closers, chips: src.chips } : blankTexts(langs);
+    $('b-texts').value = JSON.stringify(texts, null, 2);
+    $('b-msgs').textContent = '';
+    updateSteps();
+  }
+
+  $('b-from').addEventListener('change', function () { fillFrom(this.value); });
+
+  // A dark version of the brand colour, used for text on the review page and print.
+  function inkFrom(hex) {
+    var n = parseInt(hex.slice(1), 16);
+    var r = Math.round(((n >> 16) & 255) * 0.3), g = Math.round(((n >> 8) & 255) * 0.3), b = Math.round((n & 255) * 0.3);
+    return '#' + [r, g, b].map(function (v) { return ('0' + v.toString(16)).slice(-2); }).join('');
+  }
+
+  function currentSlug() { return $('b-slug').value.trim(); }
+
+  function newListText(slug) {
+    var list = slugs.slice();
+    if (slug && list.indexOf(slug) < 0) { list.push(slug); }
+    return '{\n  "clients": [' + list.map(function (s) { return JSON.stringify(s); }).join(', ') + ']\n}\n';
+  }
+
+  function updateSteps() {
+    var s = currentSlug();
+    var shown = SLUG_RE.test(s) ? s : 'slug';
+    $('b-download').textContent = 'Download ' + shown + '.json';
+    Array.prototype.forEach.call(document.querySelectorAll('.js-file'), function (n) { n.textContent = shown + '.json'; });
+    Array.prototype.forEach.call(document.querySelectorAll('.js-png'), function (n) { n.textContent = 'qr/' + shown + '.png'; });
+    Array.prototype.forEach.call(document.querySelectorAll('.js-svg'), function (n) { n.textContent = 'qr/' + shown + '.svg'; });
+    $('b-cmd').textContent = 'py tools/make_qr.py ' + shown;
+    $('b-list').textContent = newListText(SLUG_RE.test(s) ? s : '');
+  }
+  $('b-slug').addEventListener('input', updateSteps);
+
+  wireCopy($('b-copylist'), $('b-copylist-msg'), function () { return $('b-list').textContent; });
+
+  $('b-testplace').addEventListener('click', function () {
+    var id = $('b-place').value.trim();
+    if (!PLACE_RE.test(id)) {
+      $('b-testplace-msg').textContent = 'This does not look like a Place ID.';
+      return;
+    }
+    $('b-testplace-msg').textContent = '';
+    window.open('https://search.google.com/local/writereview?placeid=' + encodeURIComponent(id), '_blank', 'noopener');
+  });
+
+  function showMsgs(errors, warnings, okText) {
+    var box = $('b-msgs');
+    box.textContent = '';
+    if (errors.length) {
+      var d = el('div', 'bad');
+      d.appendChild(el('strong', null, 'Fix these before downloading:'));
+      var ul = el('ul');
+      errors.forEach(function (e) { ul.appendChild(el('li', null, e)); });
+      d.appendChild(ul);
+      box.appendChild(d);
+    } else if (okText) {
+      box.appendChild(el('div', 'good', okText));
+    }
+    if (warnings.length) {
+      var w = el('div', 'warn');
+      w.appendChild(el('strong', null, 'Please check:'));
+      var ul2 = el('ul');
+      warnings.forEach(function (e) { ul2.appendChild(el('li', null, e)); });
+      w.appendChild(ul2);
+      box.appendChild(w);
+    }
+  }
+
+  function buildClient() {
+    var errors = [], warnings = [];
+    var slug = currentSlug();
+    if (!SLUG_RE.test(slug)) {
+      errors.push('Slug: use 1 to 40 small letters, numbers or hyphens, starting with a letter or number. No spaces or capitals.');
+    } else if (slugs.indexOf(slug) > -1 || loaded[slug]) {
+      errors.push('Slug: "' + slug + '" is already used by another client.');
+    }
+    var name = $('b-name').value.trim();
+    if (!name) { errors.push('Business name is empty.'); }
+
+    var langs = checkedLangs();
+    if (!langs.length) { errors.push('Tick at least one language.'); }
+    var def = $('b-default').value;
+    if (langs.length && langs.indexOf(def) < 0) { errors.push('Pick a default language from the ticked ones.'); }
+
+    var place = $('b-place').value.trim();
+    if (!PLACE_RE.test(place)) {
+      errors.push('Google Place ID: should be 20 to 80 letters, numbers, _ or -. It usually starts with ChIJ.');
+    } else {
+      Object.keys(loaded).forEach(function (s) {
+        if (isObj(loaded[s].google) && loaded[s].google.placeId === place) {
+          warnings.push('This Place ID is the same as ' + s + '. Change it unless this really is the same business.');
+        }
+      });
+    }
+
+    var ratingText = $('b-rating').value.trim();
+    var rating = Number(ratingText);
+    if (!ratingText || !isFinite(rating) || rating < 1 || rating > 5) { errors.push('Rating: a number from 1 to 5, like 4.6.'); }
+    var countText = $('b-count').value.trim();
+    var count = Number(countText);
+    if (!countText || !isFinite(count) || count < 0 || Math.floor(count) !== count) { errors.push('Review count: a whole number, 0 or more.'); }
+
+    var wa = $('b-wa').value.trim();
+    if (wa && !/^[0-9]{10,15}$/.test(wa)) {
+      errors.push('WhatsApp: digits only, 10 to 15 long, with the country code (for example 91 then the number).');
+    }
+    if (wa && wa.length === 10) { warnings.push('WhatsApp number has 10 digits. Did you add the country code, like 91?'); }
+    var prefill = $('b-waprefill').value.trim();
+
+    var colour = $('b-colour').value.toLowerCase();
+    if (!/^#[0-9a-f]{6}$/.test(colour)) { errors.push('Brand colour is not valid.'); colour = '#1f5fbf'; }
+
+    var texts = null;
+    try { texts = JSON.parse($('b-texts').value); } catch (e) {
+      errors.push('The review lines box is not valid JSON: ' + e.message);
+    }
+    if (texts !== null && !isObj(texts)) { errors.push('The review lines box must hold one JSON object with openers, closers and chips.'); texts = null; }
+    var allText = '';
+    if (texts) {
+      checkTexts(texts, langs).forEach(function (p) { errors.push('Review lines: ' + p); });
+      allText = JSON.stringify([texts.openers, texts.closers, texts.chips]);
+    }
+
+    var nameBy = {}, cityBy = {}, landBy = {};
+    langs.forEach(function (l) {
+      var r = perLang[l];
+      nameBy[l] = r.name.value.trim();
+      cityBy[l] = r.city.value.trim();
+      landBy[l] = r.landmark.value.trim();
+      if (!nameBy[l]) { errors.push(langName(l) + ': name is empty.'); }
+      if (!cityBy[l] && allText.indexOf('{city}') > -1) { errors.push(langName(l) + ': city is empty, but the lines use {city}.'); }
+      if (!landBy[l] && allText.indexOf('{landmark}') > -1) { errors.push(langName(l) + ': landmark is empty, but the lines use {landmark}.'); }
+    });
+
+    var from = $('b-from').value;
+    var src = from ? loaded[from] : null;
+    if (src && isObj(src.business) && name === src.business.name) {
+      warnings.push('Business name is the same as ' + from + '.');
+    }
+
+    if (errors.length) { return { errors: errors, warnings: warnings }; }
+
+    var notes = {};
+    if (langs.indexOf('mwr') > -1) {
+      notes.mewari = src && isObj(src.notes) && src.notes.mewari ? src.notes.mewari : MEWARI_NOTE;
+    }
+    var srcPrint = src && isObj(src.print) ? src.print : DEFAULT_PRINT;
+
+    var out = {
+      slug: slug,
+      business: { name: name, nameByLang: nameBy, cityByLang: cityBy, landmarkByLang: landBy },
+      google: {
+        placeId: place,
+        cid: '',
+        mapsUrl: 'https://www.google.com/maps/place/?q=place_id:' + place,
+        rating: rating,
+        reviewCount: count,
+        ratingCheckedOn: todayText()
+      },
+      whatsapp: { number: wa, prefill: prefill },
+      brand: {
+        colour: colour,
+        colourInk: src && isObj(src.brand) && String(src.brand.colour).toLowerCase() === colour &&
+          /^#[0-9a-fA-F]{6}$/.test(src.brand.colourInk || '') ? src.brand.colourInk : inkFrom(colour),
+        logo: ''
+      },
+      analytics: { cloudflareToken: src && isObj(src.analytics) && typeof src.analytics.cloudflareToken === 'string' ? src.analytics.cloudflareToken : '' },
+      languages: langs,
+      defaultLanguage: def,
+      notes: notes,
+      openers: texts.openers,
+      closers: texts.closers,
+      chips: texts.chips,
+      print: {
+        headlineHi: String(srcPrint.headlineHi || DEFAULT_PRINT.headlineHi),
+        headlineEn: String(srcPrint.headlineEn || DEFAULT_PRINT.headlineEn),
+        subHi: String(srcPrint.subHi || DEFAULT_PRINT.subHi),
+        subEn: String(srcPrint.subEn || DEFAULT_PRINT.subEn)
+      }
+    };
+    return { errors: [], warnings: warnings, data: out };
+  }
+
+  $('b-download').addEventListener('click', function () {
+    updateSteps();
+    var res = buildClient();
+    if (res.errors.length) { showMsgs(res.errors, res.warnings); return; }
+    var text = JSON.stringify(res.data, null, 2) + '\n';
+    var blob = new Blob([text], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = res.data.slug + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+    showMsgs([], res.warnings, 'Downloaded ' + res.data.slug + '.json. Follow the steps below.');
+  });
+
+  fillFrom('');
+  boot();
+})();
+</script>
+</body>
+</html>

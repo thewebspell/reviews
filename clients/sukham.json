@@ -1,0 +1,416 @@
+{
+  "slug": "sukham",
+  "business": {
+    "name": "Sukham Girls Hostel (P.G.)",
+    "nameByLang": {
+      "hi": "सुखम गर्ल्स हॉस्टल",
+      "en": "Sukham Girls Hostel",
+      "hinglish": "Sukham Girls Hostel",
+      "gu": "સુખમ ગર્લ્સ હોસ્ટેલ",
+      "mwr": "सुखम गर्ल्स हॉस्टल"
+    },
+    "cityByLang": {
+      "hi": "उदयपुर",
+      "en": "Udaipur",
+      "hinglish": "Udaipur",
+      "gu": "ઉદયપુર",
+      "mwr": "उदेपुर"
+    },
+    "landmarkByLang": {
+      "hi": "एमबी कॉलेज",
+      "en": "MB College",
+      "hinglish": "MB College",
+      "gu": "એમબી કોલેજ",
+      "mwr": "एमबी कॉलेज"
+    }
+  },
+  "google": {
+    "placeId": "ChIJycXCHYblZzkRGUl-P8rN8Pg",
+    "cid": "17938063584349014297",
+    "mapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJycXCHYblZzkRGUl-P8rN8Pg",
+    "rating": 4.7,
+    "reviewCount": 214,
+    "ratingCheckedOn": "30 Sep 2026"
+  },
+  "whatsapp": {
+    "number": "917426022288",
+    "prefill": "Hello, I stayed at Sukham Girls Hostel and I want to share some feedback."
+  },
+  "brand": {
+    "colour": "#8a2d4d",
+    "colourInk": "#2a1620",
+    "logo": ""
+  },
+  "analytics": {
+    "cloudflareToken": ""
+  },
+  "languages": [
+    "hi",
+    "en",
+    "hinglish",
+    "gu",
+    "mwr"
+  ],
+  "defaultLanguage": "hi",
+  "notes": {
+    "mewari": "The Mewari lines were written by Claude and have NOT been checked by a Mewari speaker. Get a local person to read them once before you print the QR."
+  },
+  "openers": {
+    "hi": [
+      "मैं {city} में {name} में रही हूँ।",
+      "{landmark} के पास {name} में रहने का अनुभव अच्छा रहा।",
+      "{city} में गर्ल्स हॉस्टल की तलाश थी और {name} में रुकी।"
+    ],
+    "en": [
+      "I stayed at {name}, a girls hostel in {city}.",
+      "My experience at {name} near {landmark} was good.",
+      "I was looking for a girls hostel in {city} and stayed at {name}."
+    ],
+    "hinglish": [
+      "Main {city} me {name} me rahi hoon.",
+      "{landmark} ke paas {name} me rehne ka experience accha raha.",
+      "{city} me girls hostel dhoondh rahi thi aur {name} me ruki."
+    ],
+    "gu": [
+      "હું {city} માં {name} માં રહી છું.",
+      "{landmark} પાસે {name} માં રહેવાનો અનુભવ સારો રહ્યો.",
+      "{city} માં ગર્લ્સ હોસ્ટેલ શોધતી હતી અને {name} માં રહી."
+    ],
+    "mwr": [
+      "म्हैं {city} में {name} में रैयी हूं।",
+      "{landmark} रै नेड़ै {name} में रैवण रो अनुभव चोखो रैयो।",
+      "{city} में गर्ल्स हॉस्टल री तलाश ही अर {name} में रुकी।"
+    ]
+  },
+  "closers": {
+    "hi": [
+      "{city} में गर्ल्स हॉस्टल देख रहे हैं तो यहाँ एक बार ज़रूर देखें।",
+      "मैं {name} की सलाह दूँगी।",
+      "मुझे यहाँ रहना पसंद आया।"
+    ],
+    "en": [
+      "If you are looking for a girls hostel in {city}, do visit once.",
+      "I would recommend {name}.",
+      "I liked staying here."
+    ],
+    "hinglish": [
+      "{city} me girls hostel dekh rahe ho to ek baar zaroor dekhein.",
+      "Main {name} recommend karungi.",
+      "Mujhe yahan rehna accha laga."
+    ],
+    "gu": [
+      "{city} માં ગર્લ્સ હોસ્ટેલ શોધતા હો તો એક વાર જરૂર જુઓ.",
+      "હું {name} ની ભલામણ કરીશ.",
+      "મને અહીં રહેવું ગમ્યું."
+    ],
+    "mwr": [
+      "{city} में गर्ल्स हॉस्टल ढूंढ रैया हो तो आठे एक बार जरूर देखो।",
+      "म्हैं {name} री सलाह दूंला।",
+      "म्हनै आठे रैवणो चोखो लाग्यो।"
+    ]
+  },
+  "chips": [
+    {
+      "id": "home",
+      "label": {
+        "hi": "घर जैसा लगा",
+        "en": "Felt like home",
+        "hinglish": "Ghar jaisa laga",
+        "gu": "ઘર જેવું લાગ્યું",
+        "mwr": "घर जिसो लाग्यो"
+      },
+      "lines": {
+        "hi": [
+          "यहाँ घर जैसा लगता है।",
+          "हॉस्टल में रहते हुए कभी घर की कमी महसूस नहीं हुई।",
+          "माहौल घर जैसा और शांत है।"
+        ],
+        "en": [
+          "It felt like home.",
+          "I never felt away from home while staying here.",
+          "The atmosphere is calm and homely."
+        ],
+        "hinglish": [
+          "Yahan ghar jaisa feel hota hai.",
+          "Rehte hue kabhi ghar ki kami nahi lagi.",
+          "Mahaul shaant aur homely hai."
+        ],
+        "gu": [
+          "અહીં ઘર જેવું લાગે છે.",
+          "રહેતી વખતે ક્યારેય ઘરની ખોટ વર્તાઈ નથી.",
+          "વાતાવરણ શાંત અને ઘર જેવું છે."
+        ],
+        "mwr": [
+          "आठे घर जिसो लागै।",
+          "रैवतां थकां कदेई घर री कमी नीं लागी।",
+          "माहौल शांत अर घर जिसो है।"
+        ]
+      }
+    },
+    {
+      "id": "safe",
+      "label": {
+        "hi": "सुरक्षित जगह",
+        "en": "Safe for girls",
+        "hinglish": "Safe jagah",
+        "gu": "સલામત જગ્યા",
+        "mwr": "सुरक्षित ठौड़"
+      },
+      "lines": {
+        "hi": [
+          "लड़कियों के लिए सुरक्षित जगह है।",
+          "गेट और आने-जाने के नियम ठीक से माने जाते हैं।",
+          "रात में भी सुरक्षित महसूस होता है।"
+        ],
+        "en": [
+          "It is a safe place for girls.",
+          "Gate timings and entry rules are properly followed.",
+          "I felt safe here even at night."
+        ],
+        "hinglish": [
+          "Girls ke liye safe jagah hai.",
+          "Gate timing aur entry rules sahi se follow hote hain.",
+          "Raat me bhi safe feel hota hai."
+        ],
+        "gu": [
+          "છોકરીઓ માટે સલામત જગ્યા છે.",
+          "ગેટ અને આવ-જા ના નિયમ બરાબર પળાય છે.",
+          "રાત્રે પણ સલામત લાગે છે."
+        ],
+        "mwr": [
+          "छोरियां खातर सुरक्षित ठौड़ है।",
+          "गेट अर आवण-जावण रा नेम ठीक सूं पाळीजै।",
+          "रात नै ई सुरक्षित लागै।"
+        ]
+      }
+    },
+    {
+      "id": "food",
+      "label": {
+        "hi": "खाना अच्छा",
+        "en": "Homely food",
+        "hinglish": "Khana accha",
+        "gu": "જમવાનું સારું",
+        "mwr": "खाणो चोखो"
+      },
+      "lines": {
+        "hi": [
+          "खाना घर जैसा और शुद्ध शाकाहारी है।",
+          "मेस का खाना समय पर और अच्छा मिलता है।",
+          "रोज़ का खाना सादा और स्वाद वाला है।"
+        ],
+        "en": [
+          "The food is homely and pure vegetarian.",
+          "Mess food comes on time and tastes good.",
+          "Everyday meals are simple and tasty."
+        ],
+        "hinglish": [
+          "Khana ghar jaisa aur pure veg hai.",
+          "Mess ka khana time par aur accha milta hai.",
+          "Roz ka khana simple aur tasty hai."
+        ],
+        "gu": [
+          "જમવાનું ઘર જેવું અને શુદ્ધ શાકાહારી છે.",
+          "મેસનું જમવાનું સમયસર અને સારું મળે છે.",
+          "રોજનું ભોજન સાદું અને સ્વાદિષ્ટ છે."
+        ],
+        "mwr": [
+          "खाणो घर जिसो अर सुध साकाहारी है।",
+          "मेस रो खाणो बखत पर अर चोखो मिलै।",
+          "रोज रो खाणो सादो अर सवादी है।"
+        ]
+      }
+    },
+    {
+      "id": "clean",
+      "label": {
+        "hi": "कमरे साफ़",
+        "en": "Clean rooms",
+        "hinglish": "Rooms clean",
+        "gu": "રૂમ સાફ",
+        "mwr": "कमरा साफ"
+      },
+      "lines": {
+        "hi": [
+          "कमरे साफ़ रहते हैं और सफ़ाई रोज़ होती है।",
+          "बाथरूम और कमरे ठीक से साफ़ किए जाते हैं।",
+          "सफ़ाई का ध्यान अच्छे से रखा जाता है।"
+        ],
+        "en": [
+          "The rooms stay clean and housekeeping is regular.",
+          "Rooms and bathrooms are properly cleaned.",
+          "Cleanliness is well looked after."
+        ],
+        "hinglish": [
+          "Rooms clean rehte hain aur safai roz hoti hai.",
+          "Bathroom aur rooms theek se saaf hote hain.",
+          "Safai ka dhyan accha rakha jata hai."
+        ],
+        "gu": [
+          "રૂમ સાફ રહે છે અને સફાઈ રોજ થાય છે.",
+          "રૂમ અને બાથરૂમ બરાબર સાફ થાય છે.",
+          "સફાઈનું ધ્યાન સારું રખાય છે."
+        ],
+        "mwr": [
+          "कमरा साफ रैवै अर सफाई रोज होवै।",
+          "कमरा अर बाथरूम ठीक सूं साफ कीजै।",
+          "सफाई रो ध्यान चोखो राखीजै।"
+        ]
+      }
+    },
+    {
+      "id": "staff",
+      "label": {
+        "hi": "स्टाफ़ मददगार",
+        "en": "Helpful staff",
+        "hinglish": "Staff helpful",
+        "gu": "સ્ટાફ મદદરૂપ",
+        "mwr": "स्टाफ मददगार"
+      },
+      "lines": {
+        "hi": [
+          "स्टाफ़ और मालकिन दोनों मदद करने वाले हैं।",
+          "कोई दिक्कत हो तो तुरंत सुनी जाती है।",
+          "स्टाफ़ का व्यवहार अच्छा है।"
+        ],
+        "en": [
+          "The staff and the owner are helpful.",
+          "Any problem is heard and solved quickly.",
+          "The staff behave well with everyone."
+        ],
+        "hinglish": [
+          "Staff aur owner dono helpful hain.",
+          "Koi problem ho to turant sun li jaati hai.",
+          "Staff ka behaviour accha hai."
+        ],
+        "gu": [
+          "સ્ટાફ અને માલિક બંને મદદરૂપ છે.",
+          "કોઈ તકલીફ હોય તો તરત સાંભળવામાં આવે છે.",
+          "સ્ટાફનું વર્તન સારું છે."
+        ],
+        "mwr": [
+          "स्टाफ अर मालकण दोनूं मदद करै।",
+          "कीं दिक्कत होवै तो तुरत सुणीजै।",
+          "स्टाफ रो वैवार चोखो है।"
+        ]
+      }
+    },
+    {
+      "id": "location",
+      "label": {
+        "hi": "जगह सही",
+        "en": "Good location",
+        "hinglish": "Location sahi",
+        "gu": "જગ્યા અનુકૂળ",
+        "mwr": "ठौड़ ठीक"
+      },
+      "lines": {
+        "hi": [
+          "{landmark} के सामने है, कॉलेज जाना आसान पड़ता है।",
+          "बाज़ार और कॉलेज दोनों पास हैं।",
+          "{city} में यह सही जगह पर है।"
+        ],
+        "en": [
+          "It is opposite {landmark}, so going to college is easy.",
+          "The market and colleges are both close by.",
+          "The location in {city} is convenient."
+        ],
+        "hinglish": [
+          "{landmark} ke saamne hai, college jaana easy hai.",
+          "Market aur college dono paas hain.",
+          "Location {city} me kaafi convenient hai."
+        ],
+        "gu": [
+          "{landmark} ની સામે છે, કોલેજ જવું સહેલું પડે છે.",
+          "બજાર અને કોલેજ બંને નજીક છે.",
+          "{city} માં જગ્યા અનુકૂળ છે."
+        ],
+        "mwr": [
+          "{landmark} रै सामै है, कॉलेज जावणो सोरो पड़ै।",
+          "बजार अर कॉलेज दोनूं नेड़ै है।",
+          "{city} में ठौड़ ठीक जागा पर है।"
+        ]
+      }
+    },
+    {
+      "id": "value",
+      "label": {
+        "hi": "फ़ीस ठीक",
+        "en": "Fair fees",
+        "hinglish": "Fees theek",
+        "gu": "ફી વાજબી",
+        "mwr": "फीस ठीक"
+      },
+      "lines": {
+        "hi": [
+          "फ़ीस के हिसाब से सुविधाएँ अच्छी हैं।",
+          "दाम ठीक हैं और छिपा हुआ कोई खर्च नहीं।",
+          "बजट में रहने के लिए सही जगह है।"
+        ],
+        "en": [
+          "The facilities are good for the fees charged.",
+          "The rates are fair and there are no hidden charges.",
+          "It is a good option if you want to stay on a budget."
+        ],
+        "hinglish": [
+          "Fees ke hisaab se facilities acchi hain.",
+          "Rate theek hain, koi hidden charge nahi.",
+          "Budget me rehne ke liye sahi jagah hai."
+        ],
+        "gu": [
+          "ફી પ્રમાણે સુવિધાઓ સારી છે.",
+          "દર વાજબી છે અને કોઈ છુપો ખર્ચ નથી.",
+          "બજેટમાં રહેવા માટે સારી જગ્યા છે."
+        ],
+        "mwr": [
+          "फीस रै हिसाब सूं सुविधा चोखी है।",
+          "भाव ठीक है अर कोई छानो खरच नीं।",
+          "बजट में रैवण खातर ठीक ठौड़ है।"
+        ]
+      }
+    },
+    {
+      "id": "study",
+      "label": {
+        "hi": "पढ़ाई के लिए शांत",
+        "en": "Quiet for studies",
+        "hinglish": "Padhai ke liye shaant",
+        "gu": "અભ્યાસ માટે શાંત",
+        "mwr": "पढाई खातर शांत"
+      },
+      "lines": {
+        "hi": [
+          "पढ़ाई के लिए शांत माहौल मिलता है।",
+          "यहाँ रहकर पढ़ाई पर ध्यान देना आसान रहा।",
+          "शोर नहीं है, पढ़ने वालों के लिए ठीक है।"
+        ],
+        "en": [
+          "The place is quiet, which helps with studies.",
+          "Staying here made it easy to focus on studies.",
+          "There is no noise, so it suits students."
+        ],
+        "hinglish": [
+          "Padhai ke liye shaant mahaul milta hai.",
+          "Yahan rehkar studies par focus karna easy raha.",
+          "Shor nahi hai, padhne walon ke liye theek hai."
+        ],
+        "gu": [
+          "અભ્યાસ માટે શાંત વાતાવરણ મળે છે.",
+          "અહીં રહીને ભણવામાં ધ્યાન આપવું સહેલું રહ્યું.",
+          "ઘોંઘાટ નથી, વિદ્યાર્થીઓ માટે યોગ્ય છે."
+        ],
+        "mwr": [
+          "पढाई खातर शांत माहौल मिलै।",
+          "आठे रैयर पढाई में ध्यान देवणो सोरो रैयो।",
+          "सोर नीं है, पढण वाळां खातर ठीक है।"
+        ]
+      }
+    }
+  ],
+  "print": {
+    "headlineHi": "हमें गूगल पर रिव्यू दें",
+    "headlineEn": "Leave us a Google review",
+    "subHi": "कैमरा खोलकर QR स्कैन करें। 30 सेकंड लगेंगे।",
+    "subEn": "Scan with your phone camera. It takes 30 seconds."
+  }
+}
