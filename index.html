@@ -87,19 +87,29 @@
   .star.on{color:#f0a500}
   .star-word{margin-top:4px;font-size:14px;color:var(--muted);min-height:21px}
 
-  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .chip{
     appearance:none;border:1.5px solid var(--line);background:#fff;
-    color:var(--ink);font:inherit;font-size:15px;
-    border-radius:999px;padding:9px 14px;min-height:44px;
+    color:var(--ink);font:inherit;font-size:15px;line-height:1.3;
+    border-radius:12px;padding:12px 10px;min-height:56px;
     cursor:pointer;text-align:left;
+    display:flex;align-items:center;gap:9px;
+    -webkit-tap-highlight-color:transparent;
+    transition:background-color .15s ease,border-color .15s ease,color .15s ease;
+  }
+  .chip::before{
+    content:"";flex:none;width:20px;height:20px;border-radius:50%;
+    border:1.5px solid #cfc6ca;background:#fff;
+    background-position:center;background-repeat:no-repeat;background-size:12px 12px;
   }
   .chip[aria-pressed="true"]{
-    border-color:var(--brand);
-    background:color-mix(in srgb, var(--brand) 9%, #fff);
-    font-weight:600;
+    border-color:var(--brand);background:var(--brand);color:#fff;font-weight:600;
   }
-  .chip[aria-pressed="true"]::before{content:"\2713\00a0";color:var(--brand);font-weight:700}
+  .chip[aria-pressed="true"]::before{
+    border-color:#fff;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.3 2.3 4.7-5' fill='none' stroke='%23222' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+  @media (max-width:340px){ .chips{grid-template-columns:1fr} }
 
   textarea{
     width:100%;border:1.5px solid var(--line);border-radius:10px;
@@ -222,7 +232,7 @@
       t2:"आपका अनुभव कैसा रहा?",
       stars:["बहुत खराब","खराब","ठीक-ठाक","अच्छा","बहुत अच्छा"],
       t3:"क्या अच्छा लगा?",
-      h3:"जो बातें सच में सही लगीं, उन पर टैप करें। कम से कम दो चुनें।",
+      h3:"जो बातें सच में अच्छी लगीं, उन पर टैप करें। एक भी चुन सकती हैं।",
       t4:"आपका रिव्यू",
       h4:"इसे पढ़ें। आप अपने शब्दों में कुछ भी बदल सकती हैं।",
       shuffle:"दूसरे शब्दों में लिखें",
@@ -244,7 +254,7 @@
       t2:"How was your stay?",
       stars:["Very bad","Bad","Okay","Good","Very good"],
       t3:"What was good?",
-      h3:"Tap the things that were actually true for you. Pick at least two.",
+      h3:"Tap what was actually good for you. One is enough.",
       t4:"Your review",
       h4:"Read it. You can change any of it in your own words.",
       shuffle:"Try different wording",
@@ -266,7 +276,7 @@
       t2:"Aapka experience kaisa raha?",
       stars:["Bahut kharab","Kharab","Theek-thaak","Accha","Bahut accha"],
       t3:"Kya accha laga?",
-      h3:"Jo baatein sach me sahi lagi, un par tap karein. Kam se kam do chunein.",
+      h3:"Jo baatein sach me acchi lagi, un par tap karein. Ek bhi chun sakti hain.",
       t4:"Aapka review",
       h4:"Ise padhein. Aap apne shabdon me kuch bhi badal sakti hain.",
       shuffle:"Doosre shabdon me likhein",
@@ -288,7 +298,7 @@
       t2:"તમારો અનુભવ કેવો રહ્યો?",
       stars:["ખૂબ ખરાબ","ખરાબ","ઠીક","સારો","ખૂબ સારો"],
       t3:"શું સારું લાગ્યું?",
-      h3:"જે વાતો ખરેખર સાચી લાગી તેના પર ટેપ કરો. ઓછામાં ઓછી બે પસંદ કરો.",
+      h3:"જે વાતો ખરેખર સારી લાગી તેના પર ટેપ કરો. એક પણ પસંદ કરી શકો છો.",
       t4:"તમારો રિવ્યૂ",
       h4:"આ વાંચો. તમે તમારા શબ્દોમાં કંઈ પણ બદલી શકો છો.",
       shuffle:"બીજા શબ્દોમાં લખો",
@@ -310,7 +320,7 @@
       t2:"थांरो अनुभव कियां रैयो?",
       stars:["घणो खराब","खराब","ठीक","चोखो","घणो चोखो"],
       t3:"कांई चोखो लाग्यो?",
-      h3:"जिकी बातां साचीं लागी, उणां पर टैप करो। कम सूं कम दो चुणो।",
+      h3:"जिकी बातां साचाणी चोखी लागी, उणां पर टैप करो। एक ई चुण सको हो।",
       t4:"थांरो रिव्यू",
       h4:"ईं नै बांचो। थे आपरा सबदां में कीं ई बदळ सको हो।",
       shuffle:"दूजा सबदां में लिखो",
@@ -533,12 +543,12 @@
 
     var low = n <= 3;
     $("chipCard").classList.toggle("hidden", low);
-    $("draftCard").classList.toggle("hidden", low || picked.length < 2);
+    $("draftCard").classList.toggle("hidden", low || picked.length < 1);
     $("lowCard").classList.toggle("hidden", !low);
     $("waBtn").classList.toggle("hidden", low);
 
     if(low) setupLowCard();
-    if(!low && picked.length >= 2) buildDraft();
+    if(!low && picked.length >= 1) buildDraft();
   }
 
   function buildChips(){
@@ -554,7 +564,7 @@
         var at = picked.indexOf(chip.id);
         if(at > -1) picked.splice(at, 1); else picked.push(chip.id);
         b.setAttribute("aria-pressed", at > -1 ? "false" : "true");
-        if(picked.length >= 2){
+        if(picked.length >= 1){
           $("draftCard").classList.remove("hidden");
           buildDraft();
         } else {
@@ -668,7 +678,7 @@
   /* --------------------------- actions --------------------------- */
 
   $("shuffleBtn").addEventListener("click", function(){
-    if(picked.length >= 2) buildDraft();
+    if(picked.length >= 1) buildDraft();
   });
 
   $("copyBtn").addEventListener("click", function(){
